@@ -69,17 +69,17 @@ export async function POST(req: NextRequest) {
 
     try {
       const transporter = nodemailer.createTransport({
-        host: 'smtp-relay.brevo.com',
+        host: 'smtp.gmail.com',
         port: 587,
         secure: false,
         auth: {
-          user: process.env.BREVO_SMTP_USER,
-          pass: process.env.BREVO_SMTP_PASSWORD,
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_APP_PASSWORD,
         },
       })
 
       await transporter.sendMail({
-        from: `IncubeIn Digest <${process.env.BREVO_SMTP_USER}>`,
+        from: `IncubeIn Digest <${process.env.GMAIL_USER}>`,
         to: email,
         subject: 'Activate Your Startup Digest Access — IncubeIn',
         html: getVerificationEmailHtml({

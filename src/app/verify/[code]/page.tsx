@@ -6,22 +6,26 @@ import Link from 'next/link'
 
 export default function VerifyPage() {
   const params = useParams()
-  const code = params.code as string
+  const code = params?.code as string
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [data, setData] = useState<any>(null)
   const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
-    if (!code) return
+    if (!code) {
+      setStatus('error')
+      setErrorMsg('No access code found in the link.')
+      return
+    }
 
     fetch('/api/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code }),
+      body: JSON.stringify({ code: decodeURIComponent(code) }),
     })
-      .then(r => r.json())
-      .then(d => {
+      .then(async r => {
+        const d = await r.json()
         if (d.success) {
           setStatus('success')
           setData(d)
@@ -83,7 +87,6 @@ export default function VerifyPage() {
                   <span className="text-[#c0103c] font-bold">{data?.subscriber?.startup_name}</span> is now subscribed.
                 </p>
 
-                {/* Access Code */}
                 <div className="bg-[#fdf0f4] border-2 border-[#e8d0d8] rounded-xl p-5 mb-6">
                   <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-2">
                     Your Startup Access ID
@@ -139,7 +142,7 @@ export default function VerifyPage() {
         </div>
         <div className="flex items-center gap-5 text-white/50 text-xs">
           <span>🌐 www.incubein.com</span>
-          <span>✉ incubeinteam@gmail.com</span>
+          <span>✉ hello@incubein.org</span>
         </div>
       </footer>
 
